@@ -1,8 +1,4 @@
-from datetime import datetime, time
-
-import pytz
 from django.db import models
-from django.db.models import PROTECT
 from django.utils import timezone
 
 
