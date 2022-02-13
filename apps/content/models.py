@@ -1,7 +1,7 @@
 from django.db import models
 
+from apps.user.models import User
 from core.models import AuthTimeStampedModel
-from core.user.models import User
 
 
 class Category(AuthTimeStampedModel):
