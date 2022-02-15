@@ -1,5 +1,3 @@
-from rest_framework.authtoken.models import Token
-
 from apps.user.models import User
 
 

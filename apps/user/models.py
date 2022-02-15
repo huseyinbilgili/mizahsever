@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from core.constants import GENDER_TYPES, USER_STATUSES, USER_TYPES
+from core.constants import BASE_STATUSES, GENDER_TYPES, USER_TYPES
 from core.utils import generate_filename, phone_regex
 
 
@@ -19,7 +19,7 @@ class User(AbstractUser):
         validators=[phone_regex], max_length=20, db_index=True
     )
     status = models.PositiveSmallIntegerField(
-        choices=USER_STATUSES, default=USER_STATUSES.active, db_index=True
+        choices=BASE_STATUSES, default=BASE_STATUSES.active, db_index=True
     )
     user_type = models.PositiveSmallIntegerField(
         choices=USER_TYPES, default=USER_TYPES.default

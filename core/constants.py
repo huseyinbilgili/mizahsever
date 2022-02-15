@@ -11,7 +11,7 @@ USER_TYPES = Choices(
     (2, "editor", _("Editor")),
 )
 
-USER_STATUSES = Choices(
+BASE_STATUSES = Choices(
     (1, "active", _("Active")),
     (2, "passive", _("Passive")),
 )
