@@ -19,7 +19,8 @@ class VideoViewSet(ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
     permission_classes = (VideoPermissions,)
-    authentication_classes = None
+    authentication_classes = ()
+    lookup_field = "slug"
 
     def create(self, request, *args, **kwargs):
         serializer = VideoCreateSerializer(

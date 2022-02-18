@@ -22,4 +22,4 @@ class VideoPermissions(permissions.BasePermission):
                 and request.user.user_type == USER_TYPES.editor
             ):
                 return True
-        return False
+        return True

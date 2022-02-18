@@ -2,12 +2,13 @@ from apps.content.models import Comment
 
 
 class VideoCreatePipeline:
-    def __init__(self, title, description, cover_image, video, created_by):
+    def __init__(self, title, description, cover_image, video, created_by, tags):
         self.title = title
         self.description = description
         self.cover_image = cover_image
         self.video = video
         self.created_by = created_by
+        self.tags = tags
 
     def create_video(self):
         # call async job

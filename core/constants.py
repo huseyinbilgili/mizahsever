@@ -15,3 +15,10 @@ BASE_STATUSES = Choices(
     (1, "active", _("Active")),
     (2, "passive", _("Passive")),
 )
+
+VIDEO_STATUSES = Choices(
+    (1, "created", _("Created")),
+    (2, "in_progress", _("In Progress")),
+    (3, "completed", _("Completed")),
+    (4, "failed", _("Failed")),
+)

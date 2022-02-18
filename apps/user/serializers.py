@@ -40,3 +40,17 @@ class UserSerializer(serializers.ModelSerializer):
             phone_number=validated_data.get("phone_number"),
         ).run()
         return user
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "first_name",
+            "last_name",
+            "date_of_birth",
+            "email_allowed",
+            "sms_allowed",
+            "gender",
+            "phone_number",
+        )
