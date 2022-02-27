@@ -2,11 +2,7 @@ from django.urls.base import reverse
 from rest_framework import serializers
 
 from apps.content.models import Comment, Content, ContentMedia, Tag
-from apps.content.pipelines import (
-    ContentCommentCreatePipeline,
-    ContentCreatePipeline,
-    ContentMediaCreatePipeline,
-)
+from apps.content.pipelines import ContentCommentCreatePipeline, ContentCreatePipeline
 from apps.user.serializers import UserSerializer
 
 
@@ -58,9 +54,7 @@ class ContentCreateSerializer(serializers.ModelSerializer):
             description=validated_data.get("description"),
             created_by=self.context.get("user"),
             tags=validated_data.get("tags"),
-        ).run()
-        ContentMediaCreatePipeline(
-            content=content, file=validated_data.get("file")
+            file=validated_data.get("file"),
         ).run()
         return content
 

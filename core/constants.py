@@ -17,3 +17,5 @@ CONTENT_STATUSES = Choices(
     (3, "ready", _("Ready")),
     (4, "failed", _("Failed")),
 )
+
+CONTENT_MEDIA_STATUSES = CONTENT_STATUSES

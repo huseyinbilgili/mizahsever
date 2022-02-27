@@ -1,32 +1,39 @@
 from django.utils.text import slugify
 
-from apps.content.models import Comment, Content
+from apps.content.models import Comment, Content, ContentMedia
 from core.constants import CONTENT_STATUSES
 
 
-class ContentMediaCreatePipeline:
-    def __init__(self, content, file):
-        self.content = content
-        self.file = file
-
-    def create(self):
-        pass  # Call async job
+class ContentMediaProcessPipeline:
+    def __init__(self, content_media):
+        self.instance = content_media
 
     def run(self):
         pass
 
 
 class ContentCreatePipeline:
-    def __init__(self, title, description, created_by, tags):
+    def __init__(self, title, description, created_by, tags, file):
         self.title = title
         self.description = description
         self.created_by = created_by
         self.tags = tags
+        self.file = file
         self._content = None
+        self._content_media = None
 
     @property
     def content(self):
         return self._content
+
+    @property
+    def content_media(self):
+        return self._content_media
+
+    def create_content_media(self):
+        self._content_media = ContentMedia.objects.create(
+            content=self.content, file=self.file
+        )
 
     def create(self):
         self._content = Content.objects.create(
@@ -43,6 +50,7 @@ class ContentCreatePipeline:
     def run(self):
         self.create()
         self.create_tags()
+        self.create_content_media()
         return self.content
 
 

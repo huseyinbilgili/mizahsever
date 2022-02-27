@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 
 from apps.user.models import User
-from core.constants import BASE_STATUSES, CONTENT_STATUSES
+from core.constants import BASE_STATUSES, CONTENT_MEDIA_STATUSES, CONTENT_STATUSES
 from core.fields import CreatingUserField
 from core.models import AuthTimeStampedModel
 
@@ -50,6 +50,9 @@ class ContentMedia(AuthTimeStampedModel):
         upload_to="media/content/animations", null=True, blank=True
     )
     file = models.FileField(upload_to="media/contents")
+    status = models.PositiveSmallIntegerField(
+        choices=CONTENT_STATUSES, default=CONTENT_MEDIA_STATUSES.created, db_index=True
+    )
 
 
 class Comment(AuthTimeStampedModel):
