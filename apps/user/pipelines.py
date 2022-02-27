@@ -33,7 +33,9 @@ class UserCreatePipeline:
     def user(self):
         return self._user
 
-    def create(self):
+    def create(
+        self,
+    ):
         self._user = User.objects.create_user(
             username=self.username,
             password=self.password,

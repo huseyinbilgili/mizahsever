@@ -138,9 +138,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "user.user"
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.TokenAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.TokenAuthentication",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
@@ -170,7 +168,10 @@ BROKER_URL = "redis://127.0.0.1:6379/1"
 # sentry
 sentry_sdk.init(
     dsn="https://3c95ae263c074236948d6050c668739b@o1154599.ingest.sentry.io/6234398",
-    integrations=[DjangoIntegration(), CeleryIntegration()],
+    integrations=[
+        DjangoIntegration(),
+        CeleryIntegration(),
+    ],
     traces_sample_rate=1.0,
     send_default_pii=True,
 )

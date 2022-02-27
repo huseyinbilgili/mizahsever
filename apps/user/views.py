@@ -9,22 +9,46 @@ from apps.user.serializers import UserSerializer, UserUpdateSerializer
 from core.permissions import UserPermissions
 
 
-class UserViewSet(CreateAPIView, RetrieveAPIView, UpdateAPIView, GenericViewSet):
+class UserViewSet(
+    CreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    GenericViewSet,
+):
     queryset = User.objects.all()
     permission_classes = (UserPermissions,)
     serializer_class = UserSerializer
 
-    def create(self, request, *args, **kwargs):
+    def create(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         token = Token.objects.get(user=serializer.instance)
-        return Response(status=status.HTTP_200_OK, data={"token": token.key})
+        return Response(
+            status=status.HTTP_200_OK,
+            data={"token": token.key},
+        )
 
-    def update(self, request, *args, **kwargs):
+    def update(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
         instance = self.get_object()
         serializer = UserUpdateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.update(instance, serializer.validated_data)
+        serializer.update(
+            instance,
+            serializer.validated_data,
+        )
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )

@@ -22,31 +22,59 @@ class ContentViewSet(ModelViewSet):
     authentication_classes = ()
     lookup_field = "slug"
 
-    def create(self, request, *args, **kwargs):
+    def create(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
         serializer = ContentCreateSerializer(
-            data=request.data, context=dict(user=request.user)
+            data=request.data,
+            context=dict(user=request.user),
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(detail=True, methods=["get"], serializer_class=ContentCommentSerializer)
-    def comments(self, request, *args, **kwargs):
+    @action(
+        detail=True,
+        methods=["get"],
+        serializer_class=ContentCommentSerializer,
+    )
+    def comments(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
         content = self.get_object()
         queryset = content.comment_set.filter(status=BASE_STATUSES.active)
-        return Response(self.serializer_class(queryset, many=True).data)
+        return Response(
+            self.serializer_class(
+                queryset,
+                many=True,
+            ).data
+        )
 
 
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-    def get_queryset(self):
+    def get_queryset(
+        self,
+    ):
         return self.queryset.filter(commented_by=self.request.user)
 
-    def create(self, request, *args, **kwargs):
+    def create(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
         serializer = CommentCreateSerializer(
-            data=request.data, context=dict(commented_by=request.user)
+            data=request.data,
+            context=dict(commented_by=request.user),
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()

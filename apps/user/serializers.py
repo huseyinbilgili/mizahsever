@@ -24,7 +24,10 @@ class UserSerializer(serializers.ModelSerializer):
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError(dict(email=_("Email already taken.")))
 
-    def create(self, validated_data):
+    def create(
+        self,
+        validated_data,
+    ):
         user = UserCreatePipeline(
             username=validated_data.get("username"),
             password=validated_data.get("password"),

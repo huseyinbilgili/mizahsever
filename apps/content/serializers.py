@@ -9,13 +9,22 @@ from apps.user.serializers import UserSerializer
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ("pk", "name")
+        fields = (
+            "pk",
+            "name",
+        )
 
 
 class ContentMediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContentMedia
-        fields = ("pk", "cover_image", "preview", "duration", "file")
+        fields = (
+            "pk",
+            "cover_image",
+            "preview",
+            "duration",
+            "file",
+        )
 
 
 class ContentSerializer(serializers.ModelSerializer):
@@ -37,7 +46,11 @@ class ContentSerializer(serializers.ModelSerializer):
         )
 
     def get_absolute_url(self, obj):
-        return reverse("content:contents-detail", args=[], kwargs={"slug": obj.slug})
+        return reverse(
+            "content:contents-detail",
+            args=[],
+            kwargs={"slug": obj.slug},
+        )
 
 
 class ContentCreateSerializer(serializers.ModelSerializer):
@@ -46,9 +59,17 @@ class ContentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Content
-        fields = ("title", "description", "tags", "file")
+        fields = (
+            "title",
+            "description",
+            "tags",
+            "file",
+        )
 
-    def create(self, validated_data):
+    def create(
+        self,
+        validated_data,
+    ):
         content = ContentCreatePipeline(
             title=validated_data.get("title"),
             description=validated_data.get("description"),
@@ -64,15 +85,25 @@ class ContentCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("commented_by", "answer", "created_at")
+        fields = (
+            "commented_by",
+            "answer",
+            "created_at",
+        )
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ("answer", "content")
+        fields = (
+            "answer",
+            "content",
+        )
 
-    def create(self, validated_data):
+    def create(
+        self,
+        validated_data,
+    ):
         ContentCommentCreatePipeline(
             answer=validated_data.get("answer"),
             content=validated_data.get("content"),
@@ -85,4 +116,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("content", "answer", "status", "created_at")
+        fields = (
+            "content",
+            "answer",
+            "status",
+            "created_at",
+        )

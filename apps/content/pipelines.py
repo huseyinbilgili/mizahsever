@@ -1,15 +1,53 @@
+import os
+import uuid
+
 from django.utils.text import slugify
+from moviepy.editor import VideoFileClip
 
 from apps.content.models import Comment, Content, ContentMedia
-from core.constants import CONTENT_STATUSES
+from core.constants import CONTENT_MEDIA_STATUSES, CONTENT_STATUSES
+from core.utils import generate_filename
 
 
 class ContentMediaProcessPipeline:
     def __init__(self, content_media):
         self.instance = content_media
+        self.clip = VideoFileClip(filename=self.instance.file.path)
+        self.tmp_filename = uuid.uuid4()
+        self.tmp_file_paths = []
+
+    def set_status(self):
+        self.instance.status = CONTENT_MEDIA_STATUSES.ready
+
+    def set_duration(self):
+        self.instance.duration = self.clip.duration
+
+    def set_preview(self):
+        tmp_filepath = f"media/content/tmp/previews/{self.tmp_filename}.gif"
+        sub_clip = self.clip.subclip(0, 5)
+        sub_clip.write_gif(tmp_filepath)
+        self.instance.preview = tmp_filepath
+        self.tmp_file_paths.append(tmp_filepath)
+
+    def set_cover_image(self):
+        tmp_filepath = f"media/content/tmp/cover_images/{self.tmp_filename}.png"
+        self.clip.save_frame(
+            filename=tmp_filepath,
+            t=self.clip.duration / 2,
+        )
+        self.instance.cover_image = tmp_filepath
+        self.tmp_file_paths.append(tmp_filepath)
+
+    def delete_tmp_preview(self):
+        for tmp_filepath in self.tmp_file_paths:
+            os.remove(tmp_filepath)
 
     def run(self):
-        pass
+        self.set_duration()
+        self.set_preview()
+        self.delete_tmp_preview()
+        self.instance.save()
+        return self.instance
 
 
 class ContentCreatePipeline:
@@ -31,9 +69,7 @@ class ContentCreatePipeline:
         return self._content_media
 
     def create_content_media(self):
-        self._content_media = ContentMedia.objects.create(
-            content=self.content, file=self.file
-        )
+        self._content_media = ContentMedia.objects.create(content=self.content, file=self.file)
 
     def create(self):
         self._content = Content.objects.create(

@@ -17,10 +17,21 @@ class AuthTokenView(APIView):
     renderer_classes = (renderers.JSONRenderer,)
     serializer_class = AuthTokenSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
-        token, created = Token.objects.get_or_create(user=user)
-        update_last_login(None, user=user)
+        (
+            token,
+            created,
+        ) = Token.objects.get_or_create(user=user)
+        update_last_login(
+            None,
+            user=user,
+        )
         return Response({"token": token.key})

@@ -26,13 +26,31 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
-                ("modified_at", models.DateTimeField(auto_now=True)),
-                ("answer", models.TextField()),
+                (
+                    "created_at",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "modified_at",
+                    models.DateTimeField(auto_now=True),
+                ),
+                (
+                    "answer",
+                    models.TextField(),
+                ),
                 (
                     "status",
                     models.PositiveSmallIntegerField(
-                        choices=[(1, "Active"), (2, "Passive")],
+                        choices=[
+                            (
+                                1,
+                                "Active",
+                            ),
+                            (
+                                2,
+                                "Passive",
+                            ),
+                        ],
                         db_index=True,
                         default=1,
                     ),
@@ -54,25 +72,55 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
-                ("modified_at", models.DateTimeField(auto_now=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "modified_at",
+                    models.DateTimeField(auto_now=True),
+                ),
                 (
                     "uuid",
                     models.UUIDField(
-                        db_index=True, default=uuid.uuid4, editable=False, unique=True
+                        db_index=True,
+                        default=uuid.uuid4,
+                        editable=False,
+                        unique=True,
                     ),
                 ),
-                ("title", models.CharField(max_length=225)),
-                ("slug", models.SlugField(max_length=255)),
-                ("description", models.TextField()),
+                (
+                    "title",
+                    models.CharField(max_length=225),
+                ),
+                (
+                    "slug",
+                    models.SlugField(max_length=255),
+                ),
+                (
+                    "description",
+                    models.TextField(),
+                ),
                 (
                     "status",
                     models.PositiveSmallIntegerField(
                         choices=[
-                            (1, "Created"),
-                            (2, "In Progress"),
-                            (3, "Ready"),
-                            (4, "Failed"),
+                            (
+                                1,
+                                "Created",
+                            ),
+                            (
+                                2,
+                                "In Progress",
+                            ),
+                            (
+                                3,
+                                "Ready",
+                            ),
+                            (
+                                4,
+                                "Failed",
+                            ),
                         ],
                         db_index=True,
                         default=1,
@@ -95,9 +143,18 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
-                ("modified_at", models.DateTimeField(auto_now=True)),
-                ("name", models.CharField(max_length=128)),
+                (
+                    "created_at",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "modified_at",
+                    models.DateTimeField(auto_now=True),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=128),
+                ),
             ],
             options={
                 "abstract": False,
@@ -115,28 +172,54 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
-                ("modified_at", models.DateTimeField(auto_now=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "modified_at",
+                    models.DateTimeField(auto_now=True),
+                ),
                 (
                     "cover_image",
                     models.ImageField(upload_to="media/content/cover_images"),
                 ),
-                ("duration", models.PositiveSmallIntegerField(default=0)),
+                (
+                    "duration",
+                    models.PositiveSmallIntegerField(default=0),
+                ),
                 (
                     "preview",
                     models.FileField(
-                        blank=True, null=True, upload_to="media/content/animations"
+                        blank=True,
+                        null=True,
+                        upload_to="media/content/animations",
                     ),
                 ),
-                ("file", models.FileField(upload_to="media/contents")),
+                (
+                    "file",
+                    models.FileField(upload_to="media/contents"),
+                ),
                 (
                     "status",
                     models.PositiveSmallIntegerField(
                         choices=[
-                            (1, "Created"),
-                            (2, "In Progress"),
-                            (3, "Ready"),
-                            (4, "Failed"),
+                            (
+                                1,
+                                "Created",
+                            ),
+                            (
+                                2,
+                                "In Progress",
+                            ),
+                            (
+                                3,
+                                "Ready",
+                            ),
+                            (
+                                4,
+                                "Failed",
+                            ),
                         ],
                         db_index=True,
                         default=1,
