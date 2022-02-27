@@ -1,27 +1,55 @@
-from apps.content.models import Comment
+from django.utils.text import slugify
+
+from apps.content.models import Comment, Content
+from core.constants import CONTENT_STATUSES
 
 
-class VideoCreatePipeline:
-    def __init__(self, title, description, cover_image, video, created_by, tags):
-        self.title = title
-        self.description = description
-        self.cover_image = cover_image
-        self.video = video
-        self.created_by = created_by
-        self.tags = tags
+class ContentMediaCreatePipeline:
+    def __init__(self, content, file):
+        self.content = content
+        self.file = file
 
-    def create_video(self):
-        # call async job
-        pass
+    def create(self):
+        pass  # Call async job
 
     def run(self):
-        self.create_video()
+        pass
 
 
-class CommentCreatePipeline:
-    def __init__(self, answer, video, commented_by):
+class ContentCreatePipeline:
+    def __init__(self, title, description, created_by, tags):
+        self.title = title
+        self.description = description
+        self.created_by = created_by
+        self.tags = tags
+        self._content = None
+
+    @property
+    def content(self):
+        return self._content
+
+    def create(self):
+        self._content = Content.objects.create(
+            title=self.title,
+            slug=slugify(self.title),
+            description=self.description,
+            created_by=self.created_by,
+            status=CONTENT_STATUSES.created,
+        )
+
+    def create_tags(self):
+        self.content.tags.add(*self.tags)
+
+    def run(self):
+        self.create()
+        self.create_tags()
+        return self.content
+
+
+class ContentCommentCreatePipeline:
+    def __init__(self, answer, content, commented_by):
         self.answer = answer
-        self.video = video
+        self.content = content
         self.commented_by = commented_by
         self._comment = None
 
@@ -31,7 +59,7 @@ class CommentCreatePipeline:
 
     def create(self):
         self._comment = Comment.objects.create(
-            commented_by=self.commented_by, answer=self.comment, video=self.video
+            commented_by=self.commented_by, answer=self.comment, content=self.content
         )
 
     def run(self):

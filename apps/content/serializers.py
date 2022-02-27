@@ -1,39 +1,71 @@
-from rest_framework import serializers
 from django.urls.base import reverse
-from apps.content.models import Comment, Video
-from apps.content.pipelines import CommentCreatePipeline, VideoCreatePipeline
+from rest_framework import serializers
+
+from apps.content.models import Comment, Content, ContentMedia, Tag
+from apps.content.pipelines import (
+    ContentCommentCreatePipeline,
+    ContentCreatePipeline,
+    ContentMediaCreatePipeline,
+)
 from apps.user.serializers import UserSerializer
 
 
-class VideoSerializer(serializers.ModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ("pk", "name")
+
+
+class ContentMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContentMedia
+        fields = ("pk", "cover_image", "preview", "duration", "file")
+
+
+class ContentSerializer(serializers.ModelSerializer):
     created_by = UserSerializer()
     absolute_url = serializers.SerializerMethodField(read_only=True)
+    tags = TagSerializer(many=True)
+    medias = ContentMediaSerializer(many=True)
 
     class Meta:
-        model = Video
-        fields = ("pk", "title", "description", "cover_image", "created_by", "video", "absolute_url")
+        model = Content
+        fields = (
+            "pk",
+            "title",
+            "description",
+            "created_by",
+            "absolute_url",
+            "tags",
+            "medias",
+        )
 
     def get_absolute_url(self, obj):
-        return reverse("content:videos-detail", args=[], kwargs={"slug": obj.slug})
+        return reverse("content:contents-detail", args=[], kwargs={"slug": obj.slug})
 
 
-class VideoCreateSerializer(serializers.ModelSerializer):
+class ContentCreateSerializer(serializers.ModelSerializer):
+    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all())
+    file = serializers.FileField()
+
     class Meta:
-        model = Video
-        fields = ("title", "description", "cover_image", "video", "tags")
+        model = Content
+        fields = ("title", "description", "tags", "file")
 
     def create(self, validated_data):
-        VideoCreatePipeline(
+        content = ContentCreatePipeline(
             title=validated_data.get("title"),
             description=validated_data.get("description"),
-            cover_image=validated_data.get("cover_image"),
-            video=validated_data.get("video"),
             created_by=self.context.get("user"),
             tags=validated_data.get("tags"),
         ).run()
+        ContentMediaCreatePipeline(
+            content=content, file=validated_data.get("file")
+        ).run()
+        return content
 
 
-class VideoCommentSerializer(serializers.ModelSerializer):
+class ContentCommentSerializer(serializers.ModelSerializer):
     commented_by = UserSerializer()
 
     class Meta:
@@ -44,18 +76,19 @@ class VideoCommentSerializer(serializers.ModelSerializer):
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ("answer", "video")
+        fields = ("answer", "content")
 
     def create(self, validated_data):
-        CommentCreatePipeline(
-            answer=validated_data.get("comment"),
+        ContentCommentCreatePipeline(
+            answer=validated_data.get("answer"),
+            content=validated_data.get("content"),
             commented_by=self.context.get("commented_by"),
         ).run()
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    video = VideoSerializer()
+    content = ContentSerializer()
 
     class Meta:
         model = Comment
-        fields = ("video", "answer", "status", "created_at")
+        fields = ("content", "answer", "status", "created_at")

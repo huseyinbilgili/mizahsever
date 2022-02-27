@@ -14,7 +14,7 @@ class UserPermissions(permissions.BasePermission):
         return obj.user == request.user
 
 
-class VideoPermissions(permissions.BasePermission):
+class ContentPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         if view.action == "create":
             if (

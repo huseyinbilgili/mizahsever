@@ -1,5 +1,5 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 
 class FieldRegistry(object):
@@ -9,7 +9,9 @@ class FieldRegistry(object):
         self._fieldcls = fieldcls
 
     def add_field(self, model, field):
-        reg = self.__class__._registry.setdefault(self._fieldcls, {}).setdefault(model, [])
+        reg = self.__class__._registry.setdefault(self._fieldcls, {}).setdefault(
+            model, []
+        )
         reg.append(field)
 
     def get_fields(self, model):
@@ -17,7 +19,11 @@ class FieldRegistry(object):
 
         # If the model inherits a concrete model which inherits an AuthStamp model
         for base_model in model.__bases__:
-            fields.extend(self.__class__._registry.setdefault(self._fieldcls, {}).get(base_model, []))
+            fields.extend(
+                self.__class__._registry.setdefault(self._fieldcls, {}).get(
+                    base_model, []
+                )
+            )
         return fields
 
     def __contains__(self, model):
@@ -30,8 +36,16 @@ class FieldRegistry(object):
 
 
 class LastUserField(models.ForeignKey):
-    def __init__(self, to=getattr(settings, "AUTH_USER_MODEL", "auth.User"), null=True, editable=False, **kwargs):
-        super(LastUserField, self).__init__(to=to, null=null, editable=editable, **kwargs)
+    def __init__(
+        self,
+        to=getattr(settings, "AUTH_USER_MODEL", "auth.User"),
+        null=True,
+        editable=False,
+        **kwargs
+    ):
+        super(LastUserField, self).__init__(
+            to=to, null=null, editable=editable, **kwargs
+        )
 
     def contribute_to_class(self, cls, name, **kwargs):
         super(LastUserField, self).contribute_to_class(cls, name)

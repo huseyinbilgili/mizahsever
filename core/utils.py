@@ -2,13 +2,7 @@ import os
 import uuid
 from datetime import datetime
 
-from django.conf import settings
-from django.core.validators import RegexValidator
 from django.utils.deconstruct import deconstructible
-
-phone_regex = RegexValidator(
-    regex=getattr(settings, "USER_PHONE_REGEX", r"^(05)\d{9}$"),
-)
 
 
 @deconstructible

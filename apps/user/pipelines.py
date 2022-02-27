@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from apps.user.models import User
 
 
@@ -31,7 +33,7 @@ class UserCreatePipeline:
     def user(self):
         return self._user
 
-    def create_user(self):
+    def create(self):
         self._user = User.objects.create_user(
             username=self.username,
             password=self.password,
@@ -43,8 +45,9 @@ class UserCreatePipeline:
             sms_allowed=self.sms_allowed,
             gender=self.gender,
             phone_number=self.phone_number,
+            last_login=timezone.now(),
         )
 
     def run(self):
-        self.create_user()
+        self.create()
         return self.user

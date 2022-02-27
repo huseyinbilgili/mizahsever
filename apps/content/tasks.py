@@ -1,4 +1,4 @@
-from mizahsever.celery import app
+from api.celery import app
 
 
 @app.task

@@ -18,8 +18,8 @@ class UserViewSet(CreateAPIView, RetrieveAPIView, UpdateAPIView, GenericViewSet)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        token = Token.objects.get(user=serializer.instance).key
-        return Response(status=status.HTTP_200_OK, data={"token": token})
+        token = Token.objects.get(user=serializer.instance)
+        return Response(status=status.HTTP_200_OK, data={"token": token.key})
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.content.models import Video, Tag, Comment
+from apps.content.models import Comment, Content, Tag
 
 
 @admin.register(Tag)
@@ -10,9 +10,9 @@ class TagAdmin(admin.ModelAdmin):
         fields = "__all__"
 
 
-@admin.register(Video)
+@admin.register(Content)
 class VideoAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ("title",)}
+    prepopulated_fields = {"slug": ("title",)}
     readonly_fields = ("status",)
 
     class Meta:

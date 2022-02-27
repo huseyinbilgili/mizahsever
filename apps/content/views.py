@@ -3,37 +3,37 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from apps.content.models import Comment, Video
+from apps.content.models import Comment, Content
 from apps.content.serializers import (
     CommentCreateSerializer,
     CommentSerializer,
-    VideoCommentSerializer,
-    VideoCreateSerializer,
-    VideoSerializer,
+    ContentCommentSerializer,
+    ContentCreateSerializer,
+    ContentSerializer,
 )
-from core.constants import BASE_STATUSES
-from core.permissions import VideoPermissions
+from core.constants import BASE_STATUSES, CONTENT_STATUSES
+from core.permissions import ContentPermissions
 
 
-class VideoViewSet(ModelViewSet):
-    queryset = Video.objects.all()
-    serializer_class = VideoSerializer
-    permission_classes = (VideoPermissions,)
+class ContentViewSet(ModelViewSet):
+    queryset = Content.objects.filter(status=CONTENT_STATUSES.ready)
+    serializer_class = ContentSerializer
+    permission_classes = (ContentPermissions,)
     authentication_classes = ()
     lookup_field = "slug"
 
     def create(self, request, *args, **kwargs):
-        serializer = VideoCreateSerializer(
+        serializer = ContentCreateSerializer(
             data=request.data, context=dict(user=request.user)
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(detail=True, methods=["get"], serializer_class=VideoCommentSerializer)
+    @action(detail=True, methods=["get"], serializer_class=ContentCommentSerializer)
     def comments(self, request, *args, **kwargs):
-        video = self.get_object()
-        queryset = video.comment_set.filter(status=BASE_STATUSES.active)
+        content = self.get_object()
+        queryset = content.comment_set.filter(status=BASE_STATUSES.active)
         return Response(self.serializer_class(queryset, many=True).data)
 
 
